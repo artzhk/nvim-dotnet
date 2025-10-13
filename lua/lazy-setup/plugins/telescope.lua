@@ -21,12 +21,12 @@ return {
 					layout_config = {
 						vertical = {
 							preview_height = 0.7,
-							width = 0.9,
-							horizontal = 0.9,
-							prompt_position = "top",
+							width = 0.99,
+							horizontal = 0.99,
+							prompt_position = "bottom",
 						},
 					},
-					sorting_strategy = "ascending",
+					sorting_strategy = "descending",
 					color_devicons = true,
 					file_ignore_patterns = {
 						"node_modules",

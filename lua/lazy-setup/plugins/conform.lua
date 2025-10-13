@@ -22,7 +22,7 @@ return {
 				vue = { "prettierd" },
 				cpp = { "clang-format" },
 				c = { "clang-format" },
-				cs = { "clang-format" },
+				cs = { "csharpier" },
 				go = { "gofmt" },
 				bash = { "beautysh" },
 				shell = { "beautysh" },
