@@ -1,13 +1,12 @@
 local hover = vim.lsp.buf.hover
 ---@diagnostic disable-next-line: duplicate-set-field
 vim.lsp.buf.hover = function()
-    return hover({
-        max_width = 100,
-        max_height = 14,
-        border = "single",
-    })
+	return hover({
+		max_width = 100,
+		max_height = 14,
+		border = "single",
+	})
 end
-
 -- much appreciation to https://github.com/ryanthedev
 local on_lsp_attach = function(client, bufnr)
 	local opts = { buffer = bufnr, remap = false }
@@ -30,24 +29,23 @@ local on_lsp_attach = function(client, bufnr)
 	vim.keymap.set("n", "<leader>vws", function()
 		vim.lsp.buf.workspace_symbol()
 	end, opts)
-	vim.keymap.set("n", "gn", function()
-		vim.diagnostic.goto_next()
-	end, opts)
-	vim.keymap.set("n", "gp", function()
-		vim.diagnostic.goto_prev()
-	end, opts)
 	vim.keymap.set("n", "<leader>va", function()
 		vim.lsp.buf.code_action()
 	end, opts)
 	vim.keymap.set("n", "<leader>rn", function()
 		vim.lsp.buf.rename()
 	end, opts)
-        vim.keymap.set("n", "<leader>q", function() 
-                vim.diagnostic.setqflist()
-        end, opts)
+	vim.keymap.set("n", "dq", function()
+		vim.diagnostic.setloclist()
+	end, opts)
+	vim.keymap.set("n", "dQ", function()
+		vim.diagnostic.setqflist()
+	end, opts)
 end
 
 return {
+	{ "hrsh7th/nvim-cmp", enabled = false },
+	{ "hrsh7th/cmp-nvim-lsp", enabled = false },
 	{
 		"Wansmer/symbol-usage.nvim",
 		event = "LspAttach",
@@ -87,74 +85,22 @@ return {
 			},
 		},
 	},
-	-- Autocompletion
-	{
-		"hrsh7th/nvim-cmp",
-		event = "InsertEnter",
-		dependencies = {
-			{ "L3MON4D3/LuaSnip" },
-			{ "hrsh7th/cmp-path" },
-			{ "hrsh7th/cmp-nvim-lsp-signature-help" },
-			{ "saadparwaiz1/cmp_luasnip" },
-		},
-		config = function()
-			-- Here is where you configure the autocompletion settings.
-			local lsp_zero = require("lsp-zero")
-			lsp_zero.extend_cmp()
-
-			-- And you can configure cmp even more, if you want to.
-			local cmp = require("cmp")
-			local cmp_action = lsp_zero.cmp_action()
-
-			cmp.setup({
-				snippet = {
-					expand = function(args)
-						require("luasnip").lsp_expand(args.body)
-					end,
-				},
-				sources = {
-					{ name = "path" },
-					{ name = "nvim_lsp" },
-					{ name = "nvim_lua" },
-					{ name = "luasnip" },
-					{ name = "nvim_lsp_signature_help" },
-					per_filetype = {
-						codecompanion = { "codecompanion" },
-					},
-				},
-				window = {
-					completion = cmp.config.window.bordered(),
-					documentation = cmp.config.window.bordered(),
-				},
-				formatting = lsp_zero.cmp_format(),
-				mapping = cmp.mapping.preset.insert({
-					["<Tab>"] = cmp_action.luasnip_supertab(),
-					["<S-Tab>"] = cmp_action.luasnip_shift_supertab(),
-					["<CR>"] = cmp.mapping.confirm({ select = true }),
-					["<C-u>"] = cmp.mapping.scroll_docs(-4),
-					["<C-d>"] = cmp.mapping.scroll_docs(4),
-				}),
-			})
-			require("luasnip.loaders.from_vscode").load({ paths = { "~/.config/snippets" } })
-		end,
-	},
 	-- LSP
 	{
 		"neovim/nvim-lspconfig",
 		cmd = { "LspInfo", "LspInstall", "LspStart" },
 		event = { "BufReadPre", "BufNewFile" },
 		dependencies = {
-			{ "hrsh7th/cmp-nvim-lsp" },
 			{ "williamboman/mason-lspconfig.nvim" },
 		},
 		config = function()
 			local lsp_zero = require("lsp-zero")
 			lsp_zero.extend_lspconfig()
 
-                        vim.lsp.buf.handler = vim.lsp.with(
-                          vim.lsp.handlers["textDocument/hover"],
-                          { border = "rounded" }
-                        )
+			vim.lsp.buf.handler = vim.lsp.with(
+				vim.lsp.handlers["textDocument/hover"],
+				{ border = "rounded" }
+			)
 
 			lsp_zero.on_attach(function(client, bufnr)
 				on_lsp_attach(client, bufnr)
@@ -170,7 +116,11 @@ return {
 				},
 			})
 
-			local lsp_capabilities = require("cmp_nvim_lsp").default_capabilities()
+			local lsp_capabilities = vim.lsp.protocol.make_client_capabilities()
+			lsp_capabilities.textDocument.foldingRange = {
+				dynamicRegistration = false,
+				lineFoldingOnly = true,
+			}
 
 			require("mason-lspconfig").setup({
 				ensure_installed = {},
@@ -206,6 +156,7 @@ return {
 						},
 					})
 
+					vim.bo[bufnr].omnifunc = "v:lua.vim.lsp.omnifunc"
 					-- Save the original request method
 					local original_request = client.request
 
@@ -241,7 +192,7 @@ return {
 
 							-- Get the last line's content
 							local last_line = vim.api.nvim_buf_get_lines(target_bufnr, line_count - 1, line_count, true)[1]
-								or ""
+							or ""
 
 							-- Calculate the end character (0-based index)
 							local end_character = #last_line

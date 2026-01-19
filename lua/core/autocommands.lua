@@ -26,20 +26,20 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 	end,
 })
 
-vim.api.nvim_create_autocmd("BufWritePre", {
-	pattern = "*",
-	desc = "Remove bomb if presented",
-	callback = function()
-		-- leverage not deprecated version
-		local is_bomb = vim.api.nvim_exec("setlocal bomb?", true)
-		print(is_bomb)
-		if string.match(is_bomb, "nobomb") then
-			return
-		end
+-- vim.api.nvim_create_autocmd("BufWritePre", {
+-- 	pattern = "*",
+-- 	desc = "Remove bomb if presented",
+-- 	callback = function()
+-- 		-- leverage not deprecated version
+-- 		local is_bomb = vim.api.nvim_exec("setlocal bomb?", true)
+-- 		print(is_bomb)
+-- 		if string.match(is_bomb, "nobomb") then
+-- 			return
+-- 		end
 
-		vim.cmd("setlocal nobomb")
-	end,
-})
+-- 		vim.cmd("setlocal nobomb")
+-- 	end,
+-- })
 
 local M = {}
 

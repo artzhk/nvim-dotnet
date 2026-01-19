@@ -5,12 +5,13 @@ vim.opt.cursorline = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
 vim.opt.encoding = "utf-8"
+vim.opt.bomb = false
 
-vim.opt.statusline = "%<%f %h%m%r%=%-14.(%l,%c%V%) %P"
+vim.opt.statusline = "%<%f [%{&fenc != '' ? &fenc : &enc}] %h%m%r%=%-14.(%l,%c%V%) %P"
+
 
 vim.opt.nu = true
 vim.opt.relativenumber = false
-vim.opt.bomb = false
 
 vim.opt.tabstop = 8
 vim.opt.softtabstop = 8
@@ -40,7 +41,7 @@ vim.opt.updatetime = 50
 vim.g.mapleader = " "
 
 vim.opt.background = "light"
-vim.cmd("colorscheme retrobox")
+vim.cmd("colorscheme default")
 
 vim.filetype.add({ extension = { ejs = "ejs" } })
 
