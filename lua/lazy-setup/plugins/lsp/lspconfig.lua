@@ -97,10 +97,7 @@ return {
 			local lsp_zero = require("lsp-zero")
 			lsp_zero.extend_lspconfig()
 
-			vim.lsp.buf.handler = vim.lsp.with(
-				vim.lsp.handlers["textDocument/hover"],
-				{ border = "rounded" }
-			)
+			vim.lsp.buf.handler = vim.lsp.with(vim.lsp.handlers["textDocument/hover"], { border = "rounded" })
 
 			lsp_zero.on_attach(function(client, bufnr)
 				on_lsp_attach(client, bufnr)
@@ -140,95 +137,11 @@ return {
 					end,
 				},
 			})
-		end,
-	},
-	{
-		"seblj/roslyn.nvim",
-		ft = "cs",
-		-- enabled = false,
-		opts = {
-			config = {
+
+			vim.lsp.config("roslyn", {
+				capabilities = lsp_capabilities,
 				on_attach = function(client, bufnr)
-					-- let client know we got this
-					client.server_capabilities = vim.tbl_deep_extend("force", client.server_capabilities, {
-						semanticTokensProvider = {
-							full = true,
-						},
-					})
-
-					vim.bo[bufnr].omnifunc = "v:lua.vim.lsp.omnifunc"
-					-- Save the original request method
-					local original_request = client.request
-
-					-- Override the client's request method
-					client.request = function(method, params, handler, ctx, config)
-						-- Log all LSP requests to a file
-						-- local log_file = io.open("/tmp/nvim_lsp_debug.log", "a")
-						-- if log_file then
-						--   log_file:write(string.format("\n=== LSP Client Request at %s ===\n", os.date()))
-						--   log_file:write("method: " .. method .. "\n")
-						--   log_file:write("params: " .. vim.inspect(params) .. "\n")
-						--   log_file:write("================================\n")
-						--   log_file:close()
-						-- end
-
-						if method == "textDocument/semanticTokens/full" then
-							-- Modify the request to a range request covering the entire document
-
-							-- Convert URI to buffer number
-							local target_bufnr = vim.uri_to_bufnr(params.textDocument.uri)
-
-							-- Ensure the buffer is loaded
-							if not vim.api.nvim_buf_is_loaded(target_bufnr) then
-								vim.notify(
-									"[LSP] Buffer not loaded for URI: " .. params.textDocument.uri,
-									vim.log.levels.WARN
-								)
-								return original_request(method, params, handler, ctx, config)
-							end
-
-							-- Get the total number of lines in the buffer
-							local line_count = vim.api.nvim_buf_line_count(target_bufnr)
-
-							-- Get the last line's content
-							local last_line = vim.api.nvim_buf_get_lines(target_bufnr, line_count - 1, line_count, true)[1]
-							or ""
-
-							-- Calculate the end character (0-based index)
-							local end_character = #last_line
-
-							-- Construct the range
-							local range = {
-								start = { line = 0, character = 0 },
-								["end"] = { line = line_count - 1, character = end_character },
-							}
-
-							-- Construct the new params for the range request
-							local new_params = {
-								textDocument = params.textDocument,
-								range = range,
-							}
-
-							-- Log the modification
-							-- local log_file_range = io.open("/tmp/nvim_lsp_debug.log", "a")
-							-- if log_file_range then
-							--   log_file_range:write("Modified to 'textDocument/semanticTokens/range' with range: " .. vim.inspect(range) .. "\n")
-							--   log_file_range:close()
-							-- end
-
-							-- Send the modified range request
-							return original_request(
-								"textDocument/semanticTokens/range",
-								new_params,
-								handler,
-								ctx,
-								config
-							)
-						end
-
-						-- Call the original request method for all other methods
-						return original_request(method, params, handler, ctx, config)
-					end
+					on_lsp_attach(client, bufnr)
 				end,
 				settings = {
 					["csharp|inlay_hints"] = {
@@ -260,7 +173,14 @@ return {
 						dotnet_search_reference_assemblies = true,
 					},
 				},
-			},
+			})
+		end,
+	},
+	{
+		"seblyng/roslyn.nvim",
+                ft = "cs",
+		opts = {
+			-- your configuration comes here; leave empty for default settings
 		},
 	},
 }

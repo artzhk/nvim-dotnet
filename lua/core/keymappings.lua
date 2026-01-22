@@ -25,9 +25,6 @@ vim.keymap.set({"n", "v"}, "<leader>Y", ':w! /tmp/buffer.txt <CR> "+Y')
 vim.keymap.set("n", "<leader>P", "!!cat /tmp/buffer.txt<CR>")
 vim.keymap.set("v", "<leader>P", "!cat /tmp/buffer.txt<CR>")
 
--- Format with current set cmp format
-vim.keymap.set("n", "<leader>f", "<cmd>lua require('conform').format()<CR>")
-
 -- qfixlist / loclist navigation
 vim.keymap.set("n", "<C-s>", "<cmd>cnext<CR>zz")
 vim.keymap.set("n", "<C-h>", "<cmd>cprev<CR>zz")
