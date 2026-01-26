@@ -97,10 +97,8 @@ return {
 			local lsp_zero = require("lsp-zero")
 			lsp_zero.extend_lspconfig()
 
-			vim.lsp.buf.handler = vim.lsp.with(vim.lsp.handlers["textDocument/hover"], { border = "rounded" })
-
 			lsp_zero.on_attach(function(client, bufnr)
-				on_lsp_attach(client, bufnr)
+				return on_lsp_attach(client, bufnr)
 			end)
 			lsp_zero.set_server_config({
 				capabilities = {
@@ -141,7 +139,7 @@ return {
 			vim.lsp.config("roslyn", {
 				capabilities = lsp_capabilities,
 				on_attach = function(client, bufnr)
-					on_lsp_attach(client, bufnr)
+					return on_lsp_attach(client, bufnr)
 				end,
 				settings = {
 					["csharp|inlay_hints"] = {
@@ -180,6 +178,7 @@ return {
 		"seblyng/roslyn.nvim",
                 ft = "cs",
 		opts = {
+                        broad_search = true,
 			-- your configuration comes here; leave empty for default settings
 		},
 	},
