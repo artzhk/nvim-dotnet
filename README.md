@@ -1,4 +1,5 @@
-# Dotnet enbled nvim config with Roslyn
+# Dotnet enabled nvim config with Roslyn
+Minimal workable Roslyn lsp based configuration. 
 
 ## Issues
 Check `:lua print(vim.lsp.get_log_path())`, in the case of 
