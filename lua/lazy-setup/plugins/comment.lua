@@ -1,3 +1,4 @@
+-- TODO: replace with my komment plugin, no need for ext deps really
 return {
     'numToStr/Comment.nvim',
     config = function()
@@ -19,9 +20,9 @@ return {
             ---LHS of operator-pending mappings in NORMAL and VISUAL mode
             opleader = {
                 ---Line-comment keymap
-                line = 'zc',
+                line = '<leader>k',
                 ---Block-comment keymap
-                block = 'zC',
+                block = '<leader>K',
             },
             ---Enable keybindings
             ---NOTE: If given `false` then the plugin won't create any mappings

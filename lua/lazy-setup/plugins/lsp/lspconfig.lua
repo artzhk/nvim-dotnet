@@ -1,3 +1,4 @@
+-- TODO: Refactor stuff to be focused mainly for dotnet
 local hover = vim.lsp.buf.hover
 ---@diagnostic disable-next-line: duplicate-set-field
 vim.lsp.buf.hover = function()
@@ -44,8 +45,6 @@ local on_lsp_attach = function(client, bufnr)
 end
 
 return {
-	{ "hrsh7th/nvim-cmp", enabled = false },
-	{ "hrsh7th/cmp-nvim-lsp", enabled = false },
 	{
 		"Wansmer/symbol-usage.nvim",
 		event = "LspAttach",

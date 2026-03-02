@@ -20,6 +20,8 @@ vim.opt.expandtab = true
 vim.opt.scrolloff = 10
 vim.opt.colorcolumn = "120"
 
+vim.opt.completeopt = "menu,menuone,preview"
+
 vim.opt.smartindent = true
 
 vim.opt.wrap = false
@@ -41,7 +43,7 @@ vim.opt.updatetime = 50
 vim.g.mapleader = " "
 
 vim.opt.background = "light"
-vim.cmd("colorscheme default")
+vim.cmd("colorscheme quiet")
 
 vim.filetype.add({ extension = { ejs = "ejs" } })
 
