@@ -82,8 +82,14 @@ return {
 				builtin.grep_string({ search = word })
 			end)
 
+                        -- take qflist
 			vim.keymap.set("n", "<leader>tq", function()
 				builtin.quickfix()
+			end)
+
+                        -- take loclist
+			vim.keymap.set("n", "<leader>tl", function()
+                                builtin.loclist()
 			end)
 
 			vim.keymap.set("n", "<leader>gS", function()

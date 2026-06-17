@@ -41,6 +41,22 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 -- 	end,
 -- })
 
+-- wrap long lines in quickfix window
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "qf",
+	callback = function()
+		vim.opt_local.wrap = true
+	end,
+	group = autocmd_group,
+})
+
+-- trigger autoread when focus returns or buffer is entered
+vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter" }, {
+	pattern = "*",
+	command = "checktime",
+	group = autocmd_group,
+})
+
 local M = {}
 
 M.eslint_on_save = function(_, buffer)

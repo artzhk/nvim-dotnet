@@ -1,3 +1,5 @@
+local editorconfig = require("core.utils.editorconfig")
+
 vim.opt.guicursor = ""
 
 vim.opt.clipboard = "unnamedplus"
@@ -18,8 +20,8 @@ vim.opt.softtabstop = 8
 vim.opt.shiftwidth = 8
 vim.opt.expandtab = true
 vim.opt.scrolloff = 10
-vim.opt.colorcolumn = "120"
 
+vim.opt.colorcolumn = editorconfig["max_line_length"] or "72"
 vim.opt.completeopt = "menu,menuone,preview"
 
 vim.opt.smartindent = true
@@ -46,6 +48,21 @@ vim.opt.background = "light"
 vim.cmd("colorscheme quiet")
 
 vim.filetype.add({ extension = { ejs = "ejs" } })
+
+vim.opt.autoread = true
+vim.opt.textwidth = 120
+vim.opt.hidden = true
+vim.opt.undolevels = 1000
+vim.opt.undoreload = 10000
+vim.opt.laststatus = 2
+vim.opt.showmode = true
+
+vim.api.nvim_create_user_command("Cf", function()
+	local file = vim.fn.expand("%:t")
+	vim.fn.setreg('"', file)
+	vim.fn.setreg("+", file)
+	vim.notify("Copied filename: " .. file)
+end, {})
 
 vim.api.nvim_create_user_command("Cp", function()
 	local path = vim.fn.expand("%:p")

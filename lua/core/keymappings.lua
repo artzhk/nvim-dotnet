@@ -41,3 +41,55 @@ vim.keymap.set("n", "<leader>jf", vim.cmd.Ex)
 vim.keymap.set("n", "<leader>rw", ":%s/\\<<C-r><C-w>\\>//gI<Left><Left><Left>")
 -- replace all occurences of a specified word in a visual selectionRange jump to replacement with tab
 vim.keymap.set("v", "<leader>rw", ":s/<C-w>//g<Left><Left>")
+
+-- star search without jumping to next match
+vim.keymap.set("n", "*", ":keepjumps normal! mi*`i<CR>", { silent = true })
+
+-- tab navigation
+vim.keymap.set("n", "<leader>tn", "<cmd>tabn<CR>", { silent = true })
+vim.keymap.set("n", "<leader>tp", "<cmd>tabp<CR>", { silent = true })
+
+-- open quickfix list
+vim.keymap.set("n", "<leader>lq", "<cmd>copen<CR>", { silent = true })
+
+-- copy filepath / filename keymaps
+vim.keymap.set("n", "<leader>CP", "<cmd>Cp<CR>", { silent = true })
+vim.keymap.set("n", "<leader>CF", "<cmd>Cf<CR>", { silent = true })
+
+-- compile commands (emacs-like)
+vim.api.nvim_create_user_command("CompileHelp", function(opts)
+	vim.cmd("new")
+	vim.cmd("0read !" .. opts.args .. " | col -b")
+	vim.bo.buftype = "nofile"
+	vim.bo.bufhidden = "wipe"
+	vim.bo.buflisted = false
+	vim.bo.swapfile = false
+	vim.bo.readonly = true
+	vim.bo.modifiable = false
+end, { nargs = "*", complete = "shellcmd" })
+
+vim.api.nvim_create_user_command("CompileQf", function(opts)
+	vim.cmd("new")
+	vim.cmd("0read !" .. opts.args .. " | col -b")
+	vim.bo.buftype = "quickfix"
+	vim.bo.bufhidden = "wipe"
+	vim.bo.buflisted = false
+	vim.bo.swapfile = false
+	vim.bo.readonly = true
+	vim.bo.modifiable = false
+end, { nargs = "*", complete = "shellcmd" })
+
+local function compile(mode)
+	local input = vim.fn.input("[compile]: ", "", "shellcmd")
+	if input ~= "" then
+		vim.cmd(mode .. " " .. input)
+	end
+end
+
+-- man page on hovered word
+vim.keymap.set("n", "<leader>hh", function()
+	vim.cmd("CompileHelp man " .. vim.fn.expand("<cword>"))
+end, { silent = true })
+
+vim.keymap.set("n", "<leader>cc", function() compile("CompileHelp") end, { silent = true })
+vim.keymap.set("n", "<leader>cq", function() compile("CompileQf") end, { silent = true })
